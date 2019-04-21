@@ -30,16 +30,16 @@ type PriShare struct {
 	V kyber.Scalar // Value of the private share
 }
 
-func (p *PriShare) String() string {
-	return fmt.Sprintf("PriShare{%d:%v}", p.I, p.V)
-}
-
 // Hash returns the hash representation of this share
 func (p *PriShare) Hash(s kyber.HashFactory) []byte {
 	h := s.Hash()
 	_, _ = p.V.MarshalTo(h)
 	_ = binary.Write(h, binary.LittleEndian, p.I)
 	return h.Sum(nil)
+}
+
+func (p *PriShare) String() string {
+	return fmt.Sprintf("{%d:%p}", p.I, p.V)
 }
 
 // PriPoly represents a secret sharing polynomial.
