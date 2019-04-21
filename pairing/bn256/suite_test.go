@@ -2,13 +2,12 @@ package bn256
 
 import (
 	"bytes"
-	"fmt"
-	"go.dedis.ch/kyber/v3"
-	"go.dedis.ch/protobuf"
 	"testing"
 
+	"go.dedis.ch/kyber/v3"
+	"go.dedis.ch/protobuf"
+
 	"github.com/stretchr/testify/require"
-	"go.dedis.ch/kyber/v3/group/mod"
 	"go.dedis.ch/kyber/v3/util/random"
 	"golang.org/x/crypto/bn256"
 )
@@ -69,7 +68,7 @@ func TestG1(t *testing.T) {
 	ma, err := pa.MarshalBinary()
 	require.Nil(t, err)
 
-	pb := new(bn256.G1).ScalarBaseMult(&k.(*mod.Int).V)
+	pb := new(bn256.G1).ScalarBaseMult(&k.(*scalarDescribing).Int.V)
 	mb := pb.Marshal()
 
 	require.Equal(t, ma, mb)
@@ -116,12 +115,10 @@ func TestG1Ops(t *testing.T) {
 func TestG2(t *testing.T) {
 	suite := NewSuite()
 	k := suite.G2().Scalar().Pick(random.New())
-	require.Equal(t, "mod.int ", fmt.Sprintf("%s", k.(*mod.Int).MarshalID()))
 	pa := suite.G2().Point().Mul(k, nil)
-	require.Equal(t, "bn256.g2", fmt.Sprintf("%s", pa.(*pointG2).MarshalID()))
 	ma, err := pa.MarshalBinary()
 	require.Nil(t, err)
-	pb := new(bn256.G2).ScalarBaseMult(&k.(*mod.Int).V)
+	pb := new(bn256.G2).ScalarBaseMult(&k.(*scalarDescribing).Int.V)
 	mb := pb.Marshal()
 	require.Equal(t, ma, mb)
 }
@@ -186,7 +183,7 @@ func TestGT(t *testing.T) {
 	if !ok {
 		t.Fatal("unmarshal not ok")
 	}
-	pb.ScalarMult(pb, &k.(*mod.Int).V)
+	pb.ScalarMult(pb, &k.(*scalarDescribing).Int.V)
 	mb := pb.Marshal()
 	require.Equal(t, ma, mb)
 }
@@ -318,24 +315,6 @@ func tsr(t *testing.T, s *Suite, pOrig kyber.Point) {
 
 type tsrPoint struct {
 	P kyber.Point
-}
-
-func TestSuiteProtobuf(t *testing.T) {
-	//bn := suites.MustFind("bn256.adapter")
-	bn1 := NewSuiteG1()
-	bn2 := NewSuiteG2()
-	bnT := NewSuiteGT()
-
-	protobuf.RegisterInterface(func() interface{} { return bn1.Point() })
-	protobuf.RegisterInterface(func() interface{} { return bn1.Scalar() })
-	protobuf.RegisterInterface(func() interface{} { return bn2.Point() })
-	protobuf.RegisterInterface(func() interface{} { return bn2.Scalar() })
-	protobuf.RegisterInterface(func() interface{} { return bnT.Point() })
-	protobuf.RegisterInterface(func() interface{} { return bnT.Scalar() })
-
-	testTsr(t, NewSuiteG1())
-	testTsr(t, NewSuiteG2())
-	testTsr(t, NewSuiteGT())
 }
 
 func testTsr(t *testing.T, s *Suite) {

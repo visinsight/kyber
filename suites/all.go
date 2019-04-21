@@ -19,4 +19,8 @@ func init() {
 	// This is a constant time implementation that should be
 	// used as much as possible
 	register(edwards25519.NewBlakeSHA256Ed25519())
+	register(bn256.NewSuite().G1().(Suite))
+	register(bn256.NewSuite().G2().(Suite))
+	register(bn256.NewSuite().GT().(Suite))
+
 }
