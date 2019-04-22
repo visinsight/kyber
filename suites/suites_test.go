@@ -9,9 +9,9 @@ import (
 func TestSuites_Find(t *testing.T) {
 	ss := []string{
 		"ed25519",
-		"BN256_G1",
-		"BN256_G2",
-		"BN256_GT",
+		"bn256.G1",
+		"bn256.G2",
+		"bn256.GT",
 		"P256",
 		"Residue512",
 	}
@@ -30,7 +30,7 @@ func TestSuites_ConstTime(t *testing.T) {
 	RequireConstantTime()
 	defer func() { requireConstTime = false }()
 
-	s, err := Find("BN256_G1")
+	s, err := Find("bn256.G1")
 	require.Error(t, err)
 	require.Nil(t, s)
 
