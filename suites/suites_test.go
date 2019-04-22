@@ -9,9 +9,9 @@ import (
 func TestSuites_Find(t *testing.T) {
 	ss := []string{
 		"ed25519",
-		"bn256.G1",
-		"bn256.G2",
-		"bn256.GT",
+		"BN256_G1",
+		"BN256_G2",
+		"BN256_GT",
 		"P256",
 		"Residue512",
 	}
