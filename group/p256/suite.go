@@ -1,4 +1,4 @@
-package nist
+package p256
 
 import (
 	"crypto/cipher"
@@ -14,37 +14,37 @@ import (
 	"go.dedis.ch/kyber/v3/xof/blake2xb"
 )
 
-// Suite128 is the suite for P256 curve
-type Suite128 struct {
+// SuiteP256 is the suite for P256 curve
+type SuiteP256 struct {
 	p256
 }
 
 // Hash returns the instance associated with the suite
-func (s *Suite128) Hash() hash.Hash {
+func (s *SuiteP256) Hash() hash.Hash {
 	return sha256.New()
 }
 
 // XOF creates the XOF associated with the suite
-func (s *Suite128) XOF(key []byte) kyber.XOF {
+func (s *SuiteP256) XOF(key []byte) kyber.XOF {
 	return blake2xb.New(key)
 }
 
 // RandomStream returns a cipher.Stream that returns a key stream
 // from crypto/rand.
-func (s *Suite128) RandomStream() cipher.Stream {
+func (s *SuiteP256) RandomStream() cipher.Stream {
 	return random.New()
 }
 
-func (s *Suite128) Read(r io.Reader, objs ...interface{}) error {
+func (s *SuiteP256) Read(r io.Reader, objs ...interface{}) error {
 	return fixbuf.Read(r, s, objs)
 }
 
-func (s *Suite128) Write(w io.Writer, objs ...interface{}) error {
+func (s *SuiteP256) Write(w io.Writer, objs ...interface{}) error {
 	return fixbuf.Write(w, objs)
 }
 
 // New implements the kyber.encoding interface
-func (s *Suite128) New(t reflect.Type) interface{} {
+func (s *SuiteP256) New(t reflect.Type) interface{} {
 	return marshalling.GroupNew(s, t)
 }
 
@@ -55,8 +55,8 @@ func (s *Suite128) New(t reflect.Type) interface{} {
 // The scalars created by this group implement kyber.Scalar's SetBytes
 // method, interpreting the bytes as a big-endian integer, so as to be
 // compatible with the Go standard library's big.Int type.
-func NewBlakeSHA256P256() *Suite128 {
-	suite := new(Suite128)
+func NewBlakeSHA256P256() *SuiteP256 {
+	suite := new(SuiteP256)
 	suite.p256.Init()
 	return suite
 }

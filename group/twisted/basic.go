@@ -1,6 +1,6 @@
 // +build experimental
 
-package curve25519
+package twisted
 
 import (
 	"crypto/cipher"

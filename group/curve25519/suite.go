@@ -14,9 +14,9 @@ import (
 	"go.dedis.ch/kyber/v3/xof/blake2xb"
 )
 
-// SuiteCurve25519 is the suite for the 25519 curve
+// SuiteCurve25519 is the basic suite for the twisted curves
 type SuiteCurve25519 struct {
-	ProjectiveCurve
+	Curve25519
 }
 
 // Hash returns the instance associated with the suite
@@ -49,15 +49,9 @@ func (s *SuiteCurve25519) RandomStream() cipher.Stream {
 }
 
 // NewBlakeSHA256Curve25519 returns a cipher suite based on package
-// go.dedis.ch/kyber/v3/xof/blake2xb, SHA-256, and Curve25519.
-//
-// If fullGroup is false, then the group is the prime-order subgroup.
-//
-// The scalars created by this group implement kyber.Scalar's SetBytes
-// method, interpreting the bytes as a big-endian integer, so as to be
-// compatible with the Go standard library's big.Int type.
-func NewBlakeSHA256Curve25519(fullGroup bool) *SuiteCurve25519 {
+// go.dedis.ch/kyber/v3/xof/blake2xb, SHA-256, and Curve25519 in
+// Montgomery representation.
+func NewBlakeSHA256Curve25519() *SuiteCurve25519 {
 	suite := new(SuiteCurve25519)
-	suite.Init(Param25519(), fullGroup)
 	return suite
 }

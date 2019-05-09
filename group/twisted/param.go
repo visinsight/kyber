@@ -1,4 +1,4 @@
-// Package curve25519 contains several implementations of Twisted Edwards Curves,
+// Package twisted contains several implementations of Twisted Edwards Curves,
 // from general and unoptimized to highly specialized and optimized.
 //
 // Twisted Edwards curves are elliptic curves satisfying the equation:
@@ -10,7 +10,7 @@
 // are isomorphic to curves having c == 1.
 //
 // For details see Bernstein et al, "Twisted Edwards Curves", http://eprint.iacr.org/2008/013.pdf
-package curve25519
+package twisted
 
 import (
 	"math/big"
@@ -76,7 +76,7 @@ func Param1174() *Param {
 func Param25519() *Param {
 	var p Param
 	var qs big.Int
-	p.Name = "Curve25519"
+	p.Name = "Twisted25519"
 	p.P.SetBit(zero, 255, 1).Sub(&p.P, big.NewInt(19))
 	qs.SetString("27742317777372353535851937790883648493", 10)
 	p.Q.SetBit(zero, 252, 1).Add(&p.Q, &qs)

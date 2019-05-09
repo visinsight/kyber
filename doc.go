@@ -48,7 +48,7 @@ Various sub-packages provide several specific
 implementations of these cryptographic interfaces.
 In particular, the 'group/mod' sub-package provides implementations
 of modular integer groups underlying conventional DSA-style algorithms.
-The `group/nist` package provides NIST-standardized elliptic curves built on
+The `group/p256` package provides NIST-standardized elliptic curves built on
 the Go crypto library.
 The 'group/edwards25519' sub-package provides the kyber.Group interface
 using the popular Ed25519 curve.
