@@ -3,13 +3,13 @@ package bn256
 import (
 	"bytes"
 	"fmt"
-	"go.dedis.ch/kyber/v3"
-	"go.dedis.ch/protobuf"
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"go.dedis.ch/kyber/v3"
 	"go.dedis.ch/kyber/v3/group/mod"
 	"go.dedis.ch/kyber/v3/util/random"
+	"go.dedis.ch/protobuf"
 	"golang.org/x/crypto/bn256"
 )
 
@@ -286,6 +286,18 @@ func basicPointTest(t *testing.T, s *Suite) {
 	err = paCopy.UnmarshalBinary(paBuf)
 	require.Nil(t, err)
 	require.True(t, pa.Equal(paCopy))
+
+	const addersTarget = 123
+	scalarUnit := s.Scalar().One()
+	pointUnit := s.Point().Mul(scalarUnit, nil)
+
+	scalarAdder := s.Scalar().Zero()
+	pointAdder := s.Point().Mul(scalarAdder, nil)
+	for i := 0; i < addersTarget; i++ {
+		scalarAdder.Add(scalarAdder, scalarUnit)
+		pointAdder.Add(pointAdder, pointUnit)
+	}
+	require.True(t, pointAdder.Equal(s.Point().Mul(scalarAdder, nil)))
 }
 
 // Test that the suite.Read works correctly for suites with a defined `Point()`.
@@ -348,4 +360,20 @@ func testTsr(t *testing.T, s *Suite) {
 	err = protobuf.Decode(tpBuf, &tpCopy)
 	require.NoError(t, err)
 	require.True(t, tpCopy.P.Equal(tp.P))
+}
+
+func Test_g2_2add_oncurve_issue400(t *testing.T) {
+	s := NewSuiteG2()
+	p := s.Point().Base()
+	p.Add(p, p)
+
+	if !p.(*pointG2).g.IsOnCurve() {
+		t.Error("not on curve")
+	}
+
+	ma, err := p.MarshalBinary()
+	require.NoError(t, err)
+
+	err = p.UnmarshalBinary(ma)
+	require.NoError(t, err)
 }
